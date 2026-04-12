@@ -1,171 +1,106 @@
-# 🎯 PPT Generator
+# ppt-generator
 
-AI-powered PowerPoint presentation generator built with **FastAPI** and **Claude (Anthropic)**.
-
----
-
-## ✨ Features
-
-- 🤖 Generate presentations from natural-language prompts using Claude AI
-- 🔄 Transform existing `.pptx` files into reusable templates
-- 📂 Upload and manage JSON template definitions
-- 🖥️ Built-in web UI — no extra tools needed
-- ⬇️ Download generated presentations directly from the browser
+An AI-powered PowerPoint presentation generator built with FastAPI and Claude.
 
 ---
 
-## 🖥️ Web UI
+## Quick Start
 
-The application includes a built-in frontend served at **`http://localhost:8000`**.
-
-| Tab | What it does |
-|---|---|
-| ✨ Generate PPT | Enter a prompt, choose slides & theme, click Generate |
-| 🔄 Transform PPT | Upload a `.pptx` to create a reusable template |
-| 📂 Templates | Upload JSON templates or browse saved ones |
-| ⬇️ My Presentations | Retrieve & download past presentations by ID |
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Python 3.10+ (or Docker)
-- An Anthropic API key → see [API_KEYS.md](./API_KEYS.md)
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/NeelThomas1902/ppt-generator.git
-cd ppt-generator
-```
-
-### 2. Create a virtual environment
+### 1. Create and activate a virtual environment
 
 ```bash
 python -m venv venv
 
-# Windows
-.\venv\Scripts\Activate.ps1
-
 # macOS / Linux
 source venv/bin/activate
+
+# Windows (PowerShell)
+.\venv\Scripts\Activate.ps1
 ```
 
-### 3. Install dependencies
+### 2. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configure environment
+### 3. Configure environment variables
 
 ```bash
 cp .env.example .env
-# Edit .env and set your ANTHROPIC_API_KEY
+# Edit .env and add your ANTHROPIC_API_KEY
 ```
 
-### 5. Run the server
+### 4. Run the server
 
 ```bash
 uvicorn app.main:app --reload
+# Windows: python -m uvicorn app.main:app --reload
 ```
 
-Open **http://localhost:8000** in your browser to use the UI.
+The API is now available at **http://localhost:8000**.  
+Interactive docs (Swagger UI): **http://localhost:8000/docs**
+
+### 5. Make your first request
+
+```bash
+curl -X POST http://localhost:8000/api/v1/generate \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "Introduction to renewable energy", "slide_count": 5}'
+```
 
 ---
 
-## 🐳 Docker
+## Docker
 
 ```bash
-# Copy and edit .env first
-cp .env.example .env
-
+cp .env.example .env   # add your API key
 docker-compose up --build
 ```
 
-The UI will be available at **http://localhost:8000**.
+---
+
+## Documentation
+
+- 📖 [API Documentation](API_DOCUMENTATION.md) — full endpoint reference, request/response examples, error codes
+- 🚀 [Quick Start Guide](QUICKSTART.md) — step-by-step setup, common errors and solutions
 
 ---
 
-## 📡 API Endpoints
+## Examples
 
-All endpoints are prefixed with `/api/v1`.
-
-| Method | Path | Description |
-|---|---|---|
-| `POST` | `/api/v1/generate` | Generate a PPT from a text prompt |
-| `POST` | `/api/v1/transform` | Convert a `.pptx` file into a template |
-| `POST` | `/api/v1/upload-template` | Upload a JSON template definition |
-| `GET` | `/api/v1/templates` | List all saved templates |
-| `GET` | `/api/v1/presentation/{id}` | Get metadata for a generated presentation |
-| `GET` | `/health` | Health check |
-
-Interactive API docs are available at **http://localhost:8000/docs**.
-
----
-
-## 🧪 Running Tests
-
-```bash
-pytest -v
-```
-
----
-
-## 📚 Documentation
+The [`examples/`](examples/) directory contains ready-to-run scripts:
 
 | File | Description |
-|---|---|
-| [API_KEYS.md](./API_KEYS.md) | How to get and configure your Claude API key |
-| [COSTS_AND_PRICING.md](./COSTS_AND_PRICING.md) | Claude API pricing, cost examples, and tips |
+|------|-------------|
+| [`examples/generate_ppt.py`](examples/generate_ppt.py) | Generate a presentation from a text prompt |
+| [`examples/transform_ppt.py`](examples/transform_ppt.py) | Upload and transform an existing `.pptx` into a template |
+| [`examples/curl_requests.sh`](examples/curl_requests.sh) | Shell script covering all API endpoints with curl |
 
 ---
 
-## 💰 API Costs
+## Development Setup
 
-This project uses the Claude API which is a **paid service** (with free trial credits).
+```bash
+# Install dependencies
+pip install -r requirements.txt
 
-- New accounts get **~$5 in free credits**
-- A typical 10-slide presentation costs less than **$0.01** with Claude 3 Haiku
-- See [COSTS_AND_PRICING.md](./COSTS_AND_PRICING.md) for a full breakdown
+# Run tests
+pytest
 
----
-
-## 🔧 Environment Variables
-
-| Variable | Description | Default |
-|---|---|---|
-| `ANTHROPIC_API_KEY` | Your Claude API key (**required**) | — |
-| `APP_HOST` | Server bind address | `0.0.0.0` |
-| `APP_PORT` | Server port | `8000` |
-| `DATABASE_URL` | SQLite/PostgreSQL URL | SQLite (local) |
-| `UPLOAD_DIR` | Directory for uploaded files | `uploads` |
-| `TEMPLATES_DIR` | Directory for built-in templates | `app/templates` |
-| `MAX_UPLOAD_SIZE_MB` | Max upload size | `50` |
-| `ALLOWED_ORIGINS` | Comma-separated CORS origins | `http://localhost:3000,...` |
-
----
-
-## 📁 Project Structure
-
+# Run with auto-reload
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
-ppt-generator/
-├── app/
-│   ├── api/          # Routes and schemas
-│   ├── models/       # Database models
-│   ├── services/     # LLM, PPT generation, templates
-│   ├── utils/        # File handlers, validators
-│   ├── config.py     # Settings
-│   ├── database.py   # DB connection
-│   └── main.py       # App entry point
-├── frontend/
-│   └── index.html    # Web UI
-├── tests/            # Test suite
-├── API_KEYS.md
-├── COSTS_AND_PRICING.md
-├── Dockerfile
-├── docker-compose.yml
-└── requirements.txt
-```
+
+---
+
+## Available Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/health` | Health check |
+| `POST` | `/api/v1/generate` | Generate a PPT from a text prompt |
+| `POST` | `/api/v1/transform` | Convert an existing PPT into a template |
+| `POST` | `/api/v1/upload-template` | Upload a JSON template definition |
+| `GET` | `/api/v1/templates` | List all saved templates |
+| `GET` | `/api/v1/presentation/{id}` | Get a presentation by ID |

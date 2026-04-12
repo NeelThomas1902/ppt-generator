@@ -11,6 +11,9 @@ class Settings(BaseSettings):
     # API keys
     anthropic_api_key: str = Field(default="", alias="ANTHROPIC_API_KEY")
 
+    # Demo / free-testing mode (no API key required)
+    demo_mode: bool = Field(default=False, alias="DEMO_MODE")
+
     # App settings
     app_env: str = Field(default="development", alias="APP_ENV")
     app_host: str = Field(default="0.0.0.0", alias="APP_HOST")
