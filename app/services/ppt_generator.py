@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import uuid
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from pptx import Presentation
@@ -83,7 +84,7 @@ class PPTGenerator:
             filename=filename,
             download_url=f"/files/{filename}",
             slide_count=len(prs.slides),
-            created_at=__import__("datetime").datetime.utcnow().isoformat(),
+            created_at=datetime.now(timezone.utc).isoformat(),
             prompt=prompt,
         )
 

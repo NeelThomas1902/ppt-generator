@@ -45,7 +45,8 @@ class VisionService:
                         }
                         for para in shape.text_frame.paragraphs
                     ]
-                slides.append(slide_info)
+                slide_info["shapes"].append(shape_info)
+            slides.append(slide_info)
 
         return {
             "slide_count": len(slides),

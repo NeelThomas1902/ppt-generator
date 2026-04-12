@@ -72,7 +72,7 @@ async def generate_presentation(
     except Exception as exc:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(exc),
+            detail="Failed to generate presentation. Please try again.",
         ) from exc
 
 
