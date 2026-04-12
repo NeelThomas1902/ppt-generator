@@ -1,0 +1,1 @@
+"""ppt-generator application package."""
