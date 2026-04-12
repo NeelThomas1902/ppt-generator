@@ -1,0 +1,51 @@
+{
+  "name": "Corporate Theme",
+  "description": "A professional corporate presentation template with a dark blue palette.",
+  "theme": "corporate",
+  "colors": {
+    "primary": "003366",
+    "secondary": "0066CC",
+    "background": "F5F5F5",
+    "text": "1A1A1A",
+    "accent": "FF6600"
+  },
+  "fonts": {
+    "title": "Arial",
+    "body": "Arial",
+    "title_size": 40,
+    "body_size": 20
+  },
+  "slides": [
+    {
+      "layout": "title",
+      "title": "Company Presentation",
+      "subtitle": "Quarter Results | Confidential"
+    },
+    {
+      "layout": "content",
+      "title": "Executive Summary",
+      "content": [
+        "Strategic overview",
+        "Key financial highlights",
+        "Market position",
+        "Growth initiatives"
+      ]
+    },
+    {
+      "layout": "two_column",
+      "title": "Comparison",
+      "left_content": ["Strength 1", "Strength 2"],
+      "right_content": ["Opportunity 1", "Opportunity 2"]
+    },
+    {
+      "layout": "content",
+      "title": "Next Steps",
+      "content": ["Action item 1", "Action item 2", "Action item 3"]
+    },
+    {
+      "layout": "blank",
+      "title": "Questions & Answers",
+      "content": []
+    }
+  ]
+}

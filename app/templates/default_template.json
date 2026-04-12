@@ -1,0 +1,40 @@
+{
+  "name": "Default Template",
+  "description": "A clean, minimal presentation template.",
+  "theme": "default",
+  "colors": {
+    "primary": "2E86AB",
+    "secondary": "A23B72",
+    "background": "FFFFFF",
+    "text": "1A1A2E",
+    "accent": "F18F01"
+  },
+  "fonts": {
+    "title": "Calibri",
+    "body": "Calibri",
+    "title_size": 36,
+    "body_size": 18
+  },
+  "slides": [
+    {
+      "layout": "title",
+      "title": "Presentation Title",
+      "subtitle": "Subtitle or Presenter Name"
+    },
+    {
+      "layout": "content",
+      "title": "Agenda",
+      "content": ["Topic 1", "Topic 2", "Topic 3", "Topic 4"]
+    },
+    {
+      "layout": "content",
+      "title": "Section Title",
+      "content": ["Key point one", "Key point two", "Key point three"]
+    },
+    {
+      "layout": "blank",
+      "title": "Thank You",
+      "content": []
+    }
+  ]
+}
