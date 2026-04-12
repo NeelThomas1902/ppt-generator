@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PPT Generator</title>
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #23263a;
+      --border: #2e3250;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --green: #22c55e;
+      --red: #ef4444;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --radius: 10px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo-icon { font-size: 1.4rem; }
+
+    .badge {
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 20px;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Layout ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: calc(100vh - 60px);
+    }
+
+    /* ── Sidebar ── */
+    nav {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.6rem 0.8rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: var(--muted);
+      transition: all 0.15s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .nav-item:hover { background: var(--surface2); color: var(--text); }
+    .nav-item.active { background: var(--accent); color: #fff; }
+    .nav-item .icon { font-size: 1.1rem; width: 20px; text-align: center; }
+
+    /* ── Main content ── */
+    main {
+      padding: 2rem;
+      max-width: 860px;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── Section title ── */
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .section-desc {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.8rem;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.75rem;
+    }
+
+    /* ── Form controls ── */
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    textarea, input[type="text"], input[type="number"], select {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--text);
+      padding: 0.6rem 0.85rem;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    textarea:focus, input:focus, select:focus {
+      border-color: var(--accent);
+    }
+
+    textarea { resize: vertical; min-height: 110px; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-group { margin-bottom: 1rem; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 7px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-ghost {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    .btn-green { background: var(--green); color: #fff; }
+    .btn-green:hover { opacity: 0.85; }
+
+    /* ── Spinner ── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    .spinner.active { display: inline-block; }
+
+    /* ── Status / Toast ── */
+    #toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.8rem 1.2rem;
+      font-size: 0.88rem;
+      max-width: 340px;
+      display: none;
+      z-index: 999;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+
+    #toast.show { display: flex; }
+    #toast.success { border-color: var(--green); }
+    #toast.error { border-color: var(--red); }
+
+    /* ── Result box ── */
+    .result-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 1rem;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .result-box.show { display: block; }
+
+    .result-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .result-value {
+      font-size: 0.88rem;
+      word-break: break-all;
+      color: var(--text);
+    }
+
+    /* ── File drop zone ── */
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+    }
+
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: var(--accent);
+      background: rgba(99,102,241,0.05);
+    }
+
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .drop-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .drop-text { color: var(--muted); font-size: 0.9rem; }
+    .drop-file-name { color: var(--accent); font-size: 0.9rem; margin-top: 0.5rem; }
+
+    /* ── Template list ── */
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .template-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .template-card:hover { border-color: var(--accent); }
+    .template-card.selected { border-color: var(--accent); background: rgba(99,102,241,0.08); }
+
+    .template-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.3rem; }
+    .template-meta { font-size: 0.75rem; color: var(--muted); }
+
+    .empty-state {
+      text-align: center;
+      color: var(--muted);
+      padding: 2rem;
+      font-size: 0.9rem;
+    }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      background: var(--surface2);
+      border-radius: 20px;
+      height: 6px;
+      overflow: hidden;
+      margin-top: 0.8rem;
+      display: none;
+    }
+
+    .progress-wrap.show { display: block; }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 20px;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 680px) {
+      .layout { grid-template-columns: 1fr; }
+      nav { flex-direction: row; overflow-x: auto; padding: 0.5rem; border-right: none; border-bottom: 1px solid var(--border); }
+      .form-row { grid-template-columns: 1fr; }
+      main { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <a class="logo" href="#">
+    <span class="logo-icon">🎯</span>
+    PPT Generator
+    <span class="badge">AI</span>
+  </a>
+  <span style="font-size:0.8rem;color:var(--muted)">Powered by Claude (Anthropic)</span>
+</header>
+
+<!-- ── Layout ── -->
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <nav id="sidebar">
+    <button class="nav-item active" data-page="generate">
+      <span class="icon">✨</span> Generate PPT
+    </button>
+    <button class="nav-item" data-page="transform">
+      <span class="icon">🔄</span> Transform PPT
+    </button>
+    <button class="nav-item" data-page="templates">
+      <span class="icon">📂</span> Templates
+    </button>
+    <button class="nav-item" data-page="download">
+      <span class="icon">⬇️</span> My Presentations
+    </button>
+  </nav>
+
+  <!-- ── Main ── -->
+  <main>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ GENERATE PAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section id="page-generate" class="page active">
+      <h1 class="section-title">✨ Generate Presentation</h1>
+      <p class="section-desc">Describe what you need and let AI build the slides for you.</p>
+
+      <div class="card">
+        <div class="card-title">Prompt</div>
+        <div class="form-group">
+          <label for="gen-prompt">What should the presentation be about?</label>
+          <textarea id="gen-prompt" placeholder="e.g. A 10-slide pitch deck for a SaaS startup that helps restaurants reduce food waste using AI inventory management..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="gen-slides">Number of slides</label>
+            <input type="number" id="gen-slides" value="10" min="1" max="50" />
+          </div>
+          <div class="form-group">
+            <label for="gen-theme">Theme</label>
+            <select id="gen-theme">
+              <option value="">Default</option>
+              <option value="professional">Professional</option>
+              <option value="minimal">Minimal</option>
+              <option value="creative">Creative</option>
+              <option value="dark">Dark</option>
+              <option value="corporate">Corporate</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="gen-template">Template (optional)</label>
+          <select id="gen-template">
+            <option value="">None — auto-generate</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" id="btn-generate">
+          <div class="spinner" id="gen-spinner"></div>
+          <span id="gen-btn-text">🚀 Generate</span>
+        </button>
+
+        <div class="progress-wrap" id="gen-progress">
+          <div class="progress-bar" id="gen-progress-bar"></div>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div class="result-box" id="gen-result">
+        <div class="result-label">✅ Presentation Created</div>
+        <div class="result-value" id="gen-result-id"></div>
+        <div style="margin-top:0.8rem;display:flex;gap:0.6rem;flex-wrap:wrap;">
+          <button class="btn btn-green" id="gen-download-btn">⬇️ Download .pptx</button>
+          <button class="btn btn-ghost" id="gen-copy-id">📋 Copy ID</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ TRANSFORM PAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section id="page-transform" class="page">
+      <h1 class="section-title">🔄 Transform PPT</h1>
+      <p class="section-desc">Upload an existing PowerPoint and convert it into a reusable template.</p>
+
+      <div class="card">
+        <div class="card-title">Upload File</div>
+
+        <div class="drop-zone" id="transform-drop">
+          <input type="file" id="transform-file" accept=".pptx" />
+          <div class="drop-icon">📎</div>
+          <div class="drop-text">Drop your .pptx file here, or <strong>click to browse</strong></div>
+          <div class="drop-file-name" id="transform-file-name"></div>
+        </div>
+
+        <div style="height:1rem"></div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="transform-name">Template name</label>
+            <input type="text" id="transform-name" placeholder="e.g. Sales Deck 2024" />
+          </div>
+          <div class="form-group">
+            <label for="transform-desc">Description (optional)</label>
+            <input type="text" id="transform-desc" placeholder="Brief description" />
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="btn-transform">
+          <div class="spinner" id="transform-spinner"></div>
+          <span id="transform-btn-text">🔄 Transform</span>
+        </button>
+      </div>
+
+      <div class="result-box" id="transform-result">
+        <div class="result-label">✅ Template Created</div>
+        <div class="result-value" id="transform-result-name"></div>
+        <div class="result-value" id="transform-result-id" style="color:var(--muted);font-size:0.8rem;margin-top:0.3rem;"></div>
+      </div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ TEMPLATES PAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section id="page-templates" class="page">
+      <h1 class="section-title">📂 Templates</h1>
+      <p class="section-desc">Upload JSON template definitions or browse saved templates.</p>
+
+      <div class="card">
+        <div class="card-title">Upload JSON Template</div>
+        <div class="drop-zone" id="json-drop">
+          <input type="file" id="json-file" accept=".json" />
+          <div class="drop-icon">📄</div>
+          <div class="drop-text">Drop a <strong>.json</strong> template file here, or <strong>click to browse</strong></div>
+          <div class="drop-file-name" id="json-file-name"></div>
+        </div>
+        <div style="height:1rem"></div>
+        <button class="btn btn-primary" id="btn-upload-json">
+          <div class="spinner" id="json-spinner"></div>
+          <span id="json-btn-text">📤 Upload Template</span>
+        </button>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <span class="card-title" style="margin-bottom:0">Saved Templates</span>
+          <button class="btn btn-ghost" id="btn-refresh-templates" style="padding:0.4rem 0.8rem;font-size:0.8rem;">🔄 Refresh</button>
+        </div>
+        <div class="template-grid" id="template-grid">
+          <div class="empty-state">Loading templates…</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DOWNLOAD PAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section id="page-download" class="page">
+      <h1 class="section-title">⬇️ My Presentations</h1>
+      <p class="section-desc">Retrieve and download a previously generated presentation by its ID.</p>
+
+      <div class="card">
+        <div class="form-group">
+          <label for="dl-id">Presentation ID</label>
+          <input type="text" id="dl-id" placeholder="Paste presentation ID here…" />
+        </div>
+        <button class="btn btn-primary" id="btn-fetch">
+          <div class="spinner" id="fetch-spinner"></div>
+          <span id="fetch-btn-text">🔍 Fetch</span>
+        </button>
+      </div>
+
+      <div class="result-box" id="dl-result">
+        <div class="result-label">Presentation Found</div>
+        <div id="dl-info"></div>
+        <div style="margin-top:0.8rem;">
+          <button class="btn btn-green" id="dl-download-btn">⬇️ Download .pptx</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ── Toast ── -->
+<div id="toast">
+  <span id="toast-icon"></span>
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+  // ── Config ─────────────────────────────────────────────────────────────────
+  // The UI talks to the API on the same origin by default.
+  // Change API_BASE if your backend runs on a different port.
+  const API_BASE = window.location.origin + '/api/v1';
+
+  // ── Helpers ────────────────────────────────────────────────────────────────
+  function showToast(msg, type = 'info') {
+    const t = document.getElementById('toast');
+    const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+    document.getElementById('toast-icon').textContent = icon;
+    document.getElementById('toast-msg').textContent = msg;
+    t.className = 'show ' + type;
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.className = '', 4000);
+  }
+
+  function setLoading(spinnerId, btnTextId, btnId, loading, label) {
+    const spinner = document.getElementById(spinnerId);
+    const btnText = document.getElementById(btnTextId);
+    const btn = document.getElementById(btnId);
+    spinner.classList.toggle('active', loading);
+    btn.disabled = loading;
+    if (!loading && label) btnText.textContent = label;
+  }
+
+  function showResult(id) {
+    document.getElementById(id).classList.add('show');
+  }
+
+  function hideResult(id) {
+    document.getElementById(id).classList.remove('show');
+  }
+
+  // ── Navigation ─────────────────────────────────────────────────────────────
+  document.querySelectorAll('.nav-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('page-' + btn.dataset.page).classList.add('active');
+      if (btn.dataset.page === 'templates') loadTemplates();
+    });
+  });
+
+  // ── File drop helpers ──────────────────────────────────────────────────────
+  function bindDropZone(zoneId, inputId, labelId) {
+    const zone = document.getElementById(zoneId);
+    const input = document.getElementById(inputId);
+    const label = document.getElementById(labelId);
+
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      if (e.dataTransfer.files.length) {
+        input.files = e.dataTransfer.files;
+        label.textContent = e.dataTransfer.files[0].name;
+      }
+    });
+    input.addEventListener('change', () => {
+      if (input.files.length) label.textContent = input.files[0].name;
+    });
+  }
+
+  bindDropZone('transform-drop', 'transform-file', 'transform-file-name');
+  bindDropZone('json-drop', 'json-file', 'json-file-name');
+
+  // ── Generate presentation ──────────────────────────────────────────────────
+  let lastPresentationId = null;
+  let lastFileName = null;
+
+  document.getElementById('btn-generate').addEventListener('click', async () => {
+    const prompt = document.getElementById('gen-prompt').value.trim();
+    if (prompt.length < 10) {
+      showToast('Please enter a more detailed prompt (at least 10 characters).', 'error');
+      return;
+    }
+
+    const payload = {
+      prompt,
+      slide_count: parseInt(document.getElementById('gen-slides').value) || 10,
+      theme: document.getElementById('gen-theme').value || null,
+      template_id: document.getElementById('gen-template').value || null,
+    };
+
+    setLoading('gen-spinner', 'gen-btn-text', 'btn-generate', true);
+    hideResult('gen-result');
+
+    // Fake progress bar
+    const bar = document.getElementById('gen-progress-bar');
+    const wrap = document.getElementById('gen-progress');
+    wrap.classList.add('show');
+    bar.style.width = '10%';
+    const iv = setInterval(() => {
+      const cur = parseFloat(bar.style.width);
+      if (cur < 85) bar.style.width = (cur + (85 - cur) * 0.08) + '%';
+    }, 400);
+
+    try {
+      const res = await fetch(API_BASE + '/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Generation failed');
+
+      bar.style.width = '100%';
+      setTimeout(() => wrap.classList.remove('show'), 800);
+
+      lastPresentationId = data.id;
+      lastFileName = data.filename;
+      document.getElementById('gen-result-id').textContent =
+        `ID: ${data.id}  •  Slides: ${data.slide_count}  •  File: ${data.filename}`;
+      showResult('gen-result');
+      showToast('Presentation generated successfully!', 'success');
+    } catch (err) {
+      bar.style.width = '0%';
+      wrap.classList.remove('show');
+      showToast(err.message, 'error');
+    } finally {
+      clearInterval(iv);
+      setLoading('gen-spinner', 'gen-btn-text', 'btn-generate', false, '🚀 Generate');
+    }
+  });
+
+  document.getElementById('gen-download-btn').addEventListener('click', () => {
+    if (lastFileName) downloadFile(lastFileName);
+  });
+
+  document.getElementById('gen-copy-id').addEventListener('click', () => {
+    if (lastPresentationId) {
+      navigator.clipboard.writeText(lastPresentationId);
+      showToast('ID copied to clipboard!', 'success');
+    }
+  });
+
+  // ── Transform presentation ─────────────────────────────────────────────────
+  document.getElementById('btn-transform').addEventListener('click', async () => {
+    const file = document.getElementById('transform-file').files[0];
+    if (!file) { showToast('Please select a .pptx file first.', 'error'); return; }
+
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('name', document.getElementById('transform-name').value || file.name);
+    fd.append('description', document.getElementById('transform-desc').value || '');
+
+    setLoading('transform-spinner', 'transform-btn-text', 'btn-transform', true);
+    hideResult('transform-result');
+
+    try {
+      const res = await fetch(API_BASE + '/transform', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Transform failed');
+
+      document.getElementById('transform-result-name').textContent = '📂 ' + data.name;
+      document.getElementById('transform-result-id').textContent = 'ID: ' + data.id;
+      showResult('transform-result');
+      showToast('Template created from your PPT!', 'success');
+    } catch (err) {
+      showToast(err.message, 'error');
+    } finally {
+      setLoading('transform-spinner', 'transform-btn-text', 'btn-transform', false, '🔄 Transform');
+    }
+  });
+
+  // ── Upload JSON template ───────────────────────────────────────────────────
+  document.getElementById('btn-upload-json').addEventListener('click', async () => {
+    const file = document.getElementById('json-file').files[0];
+    if (!file) { showToast('Please select a .json file first.', 'error'); return; }
+
+    const fd = new FormData();
+    fd.append('file', file);
+
+    setLoading('json-spinner', 'json-btn-text', 'btn-upload-json', true);
+
+    try {
+      const res = await fetch(API_BASE + '/upload-template', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Upload failed');
+      showToast('Template uploaded: ' + data.name, 'success');
+      loadTemplates();
+    } catch (err) {
+      showToast(err.message, 'error');
+    } finally {
+      setLoading('json-spinner', 'json-btn-text', 'btn-upload-json', false, '📤 Upload Template');
+    }
+  });
+
+  // ── Load templates ─────────────────────────────────────────────────────────
+  async function loadTemplates() {
+    const grid = document.getElementById('template-grid');
+    grid.innerHTML = '<div class="empty-state">Loading…</div>';
+    try {
+      const res = await fetch(API_BASE + '/templates');
+      const data = await res.json();
+      const templates = data.templates || [];
+
+      if (!templates.length) {
+        grid.innerHTML = '<div class="empty-state">No templates yet. Upload one above!</div>';
+        return;
+      }
+
+      grid.innerHTML = '';
+      templates.forEach(t => {
+        const div = document.createElement('div');
+        div.className = 'template-card';
+        div.innerHTML = `
+          <div class="template-name">📂 ${t.name}</div>
+          <div class="template-meta">${t.slide_count} slides${t.theme ? ' · ' + t.theme : ''}</div>
+          <div class="template-meta" style="margin-top:0.3rem;font-size:0.7rem;word-break:break-all;">${t.id}</div>
+        `;
+        div.addEventListener('click', () => {
+          document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+          div.classList.add('selected');
+          // Pre-fill template in generate page
+          const sel = document.getElementById('gen-template');
+          let opt = sel.querySelector(`option[value="${t.id}"]`);
+          if (!opt) {
+            opt = new Option(t.name, t.id);
+            sel.appendChild(opt);
+          }
+          sel.value = t.id;
+          showToast(`Template "${t.name}" selected for generation`, 'success');
+        });
+        grid.appendChild(div);
+      });
+
+      // Also populate generate-page template selector
+      const sel = document.getElementById('gen-template');
+      templates.forEach(t => {
+        if (!sel.querySelector(`option[value="${t.id}"]`)) {
+          sel.appendChild(new Option(t.name, t.id));
+        }
+      });
+    } catch (err) {
+      grid.innerHTML = `<div class="empty-state">Error loading templates: ${err.message}</div>`;
+    }
+  }
+
+  document.getElementById('btn-refresh-templates').addEventListener('click', loadTemplates);
+
+  // ── Fetch / Download presentation ──────────────────────────────────────────
+  let fetchedFileName = null;
+
+  document.getElementById('btn-fetch').addEventListener('click', async () => {
+    const id = document.getElementById('dl-id').value.trim();
+    if (!id) { showToast('Please enter a presentation ID.', 'error'); return; }
+
+    setLoading('fetch-spinner', 'fetch-btn-text', 'btn-fetch', true);
+    hideResult('dl-result');
+
+    try {
+      const res = await fetch(API_BASE + `/presentation/${encodeURIComponent(id)}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Not found');
+
+      fetchedFileName = data.filename;
+      document.getElementById('dl-info').innerHTML = `
+        <div class="result-value"><strong>${data.filename}</strong></div>
+        <div style="color:var(--muted);font-size:0.8rem;margin-top:0.3rem;">
+          ${data.slide_count} slides
+          ${data.prompt ? ' · Prompt: ' + data.prompt.substring(0, 80) + (data.prompt.length > 80 ? '…' : '') : ''}
+        </div>
+      `;
+      showResult('dl-result');
+    } catch (err) {
+      showToast(err.message, 'error');
+    } finally {
+      setLoading('fetch-spinner', 'fetch-btn-text', 'btn-fetch', false, '🔍 Fetch');
+    }
+  });
+
+  document.getElementById('dl-download-btn').addEventListener('click', () => {
+    if (fetchedFileName) downloadFile(fetchedFileName);
+  });
+
+  // ── Download helper ────────────────────────────────────────────────────────
+  function downloadFile(filename) {
+    // The backend stores generated files in the 'generated' folder, served at /generated/
+    const url = window.location.origin + '/generated/' + encodeURIComponent(filename);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  loadTemplates();
+</script>
+</body>
+</html>
