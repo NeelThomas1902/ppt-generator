@@ -19,6 +19,7 @@ from app.api.schemas import (
 from app.config import settings
 from app.database import get_db
 from app.services.llm_service import LLMService
+from app.services.llm_service_mock import MockLLMService
 from app.services.ppt_generator import PPTGenerator
 from app.services.ppt_transformer import PPTTransformer
 from app.services.template_service import TemplateService
@@ -30,11 +31,13 @@ router = APIRouter()
 
 # ── Dependency helpers ─────────────────────────────────────────────────────────
 
-def get_llm_service() -> LLMService:
+def get_llm_service() -> LLMService | MockLLMService:
+    if settings.demo_mode:
+        return MockLLMService()
     return LLMService()
 
 
-def get_ppt_generator(llm: LLMService = Depends(get_llm_service)) -> PPTGenerator:
+def get_ppt_generator(llm: LLMService | MockLLMService = Depends(get_llm_service)) -> PPTGenerator:
     return PPTGenerator(llm)
 
 
