@@ -27,6 +27,7 @@ class Settings(BaseSettings):
 
     # File storage
     upload_dir: str = Field(default="uploads", alias="UPLOAD_DIR")
+    generated_dir: str = Field(default="generated", alias="GENERATED_DIR")
     templates_dir: str = Field(default="app/templates", alias="TEMPLATES_DIR")
     max_upload_size_mb: int = Field(default=50, alias="MAX_UPLOAD_SIZE_MB")
 

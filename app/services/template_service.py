@@ -114,7 +114,7 @@ class TemplateService:
         return PresentationResponse(
             id=p.id,
             filename=p.filename,
-            download_url=f"/files/{p.filename}",
+            download_url=f"/generated/{p.filename}",
             slide_count=p.slide_count,
             created_at=p.created_at,
             prompt=p.prompt,
