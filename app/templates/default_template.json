@@ -1,0 +1,14 @@
+{
+  "name": "default_template",
+  "slide_width": 10,
+  "slide_height": 7.5,
+  "font_family": "Calibri",
+  "title_font_size": 36,
+  "body_font_size": 24,
+  "colors": {
+    "background": "#FFFFFF",
+    "title": "#1A1A2E",
+    "body": "#333333",
+    "accent": "#0066CC"
+  }
+}

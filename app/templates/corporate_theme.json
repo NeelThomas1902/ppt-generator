@@ -1,0 +1,16 @@
+{
+  "name": "corporate_theme",
+  "slide_width": 13.33,
+  "slide_height": 7.5,
+  "font_family": "Arial",
+  "title_font_size": 40,
+  "body_font_size": 20,
+  "colors": {
+    "background": "#003366",
+    "title": "#FFFFFF",
+    "body": "#CCDDEE",
+    "accent": "#FF9900"
+  },
+  "logo": null,
+  "footer": "Confidential"
+}
