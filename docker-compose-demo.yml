@@ -1,0 +1,56 @@
+version: "3.9"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PPT Generator – Demo Stack
+#
+# One-command demo that requires NO API key.
+# Uses the built-in mock LLM service (DEMO_MODE=true) so you can exercise
+# every feature of the application completely free of charge.
+#
+# Usage:
+#   docker compose -f docker-compose-demo.yml up --build
+#
+# Then open:
+#   API docs  → http://localhost:8000/docs
+#   Health    → http://localhost:8000/health
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      # Demo mode – no API key needed
+      DEMO_MODE: "true"
+      ANTHROPIC_API_KEY: ""
+
+      # App settings
+      APP_ENV: development
+      APP_HOST: "0.0.0.0"
+      APP_PORT: "8000"
+      DEBUG: "true"
+
+      # Database
+      DATABASE_URL: "sqlite+aiosqlite:///./ppt_generator.db"
+
+      # File storage
+      UPLOAD_DIR: uploads
+      TEMPLATES_DIR: app/templates
+      MAX_UPLOAD_SIZE_MB: "50"
+
+      # CORS – allow connections from any local origin during demo
+      ALLOWED_ORIGINS: "http://localhost:3000,http://localhost:8080,http://localhost:8000"
+    volumes:
+      - ppt_uploads:/app/uploads
+      - ppt_generated:/app/generated
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  ppt_uploads:
+  ppt_generated:
