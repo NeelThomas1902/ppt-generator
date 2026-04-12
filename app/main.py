@@ -14,7 +14,6 @@ from app.api.routes import router
 # Resolve paths relative to the project root (one level above this file)
 _BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _FRONTEND_DIR = os.path.join(_BASE_DIR, "frontend")
-_GENERATED_DIR = os.path.join(_BASE_DIR, "generated")
 
 
 def create_app() -> FastAPI:
@@ -40,8 +39,8 @@ def create_app() -> FastAPI:
     app.include_router(router, prefix="/api/v1")
 
     # Serve generated .pptx files so the frontend can download them
-    os.makedirs(_GENERATED_DIR, exist_ok=True)
-    app.mount("/generated", StaticFiles(directory=_GENERATED_DIR), name="generated")
+    os.makedirs(settings.generated_dir, exist_ok=True)
+    app.mount("/generated", StaticFiles(directory=settings.generated_dir), name="generated")
 
     # Serve the frontend SPA
     if os.path.isdir(_FRONTEND_DIR):

@@ -74,15 +74,15 @@ class PPTGenerator:
                 notes_slide.notes_text_frame.text = slide_data["notes"]
 
         # Persist
-        os.makedirs(settings.upload_dir, exist_ok=True)
+        os.makedirs(settings.generated_dir, exist_ok=True)
         filename = f"{uuid.uuid4()}.pptx"
-        output_path = os.path.join(settings.upload_dir, filename)
+        output_path = os.path.join(settings.generated_dir, filename)
         prs.save(output_path)
 
         return PresentationResponse(
             id=str(uuid.uuid4()),
             filename=filename,
-            download_url=f"/files/{filename}",
+            download_url=f"/generated/{filename}",
             slide_count=len(prs.slides),
             created_at=datetime.now(timezone.utc).isoformat(),
             prompt=prompt,
