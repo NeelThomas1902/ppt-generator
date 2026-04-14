@@ -64,8 +64,14 @@ class VisionService:
                 if shape.has_text_frame:
                     for para in shape.text_frame.paragraphs:
                         for run in para.runs:
-                            if run.font.color and run.font.color.rgb:
-                                hex_color = str(run.font.color.rgb)
+                            if not run.font.color:
+                                continue
+                            try:
+                                rgb = run.font.color.rgb
+                            except AttributeError:
+                                rgb = None
+                            if rgb:
+                                hex_color = str(rgb)
                                 if hex_color not in colors:
                                     colors.append(hex_color)
         return colors

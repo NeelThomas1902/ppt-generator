@@ -35,6 +35,15 @@ class TemplateService:
         template = result.scalar_one_or_none()
         return self._template_to_schema(template) if template else None
 
+    async def get_template_definition(self, template_id: str) -> Optional[Dict[str, Any]]:
+        result = await self._db.execute(
+            select(Template).where(Template.id == template_id)
+        )
+        template = result.scalar_one_or_none()
+        if not template:
+            return None
+        return json.loads(template.definition)
+
     async def create_template(
         self,
         name: str,

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import os
 import uuid
 from typing import List
@@ -20,6 +21,8 @@ from app.config import settings
 from app.database import get_db
 from app.services.llm_service import LLMService
 from app.services.llm_service_mock import MockLLMService
+from app.services.llm_service_ollama import OllamaLLMService
+from app.services.llm_types import LLMClient
 from app.services.ppt_generator import PPTGenerator
 from app.services.ppt_transformer import PPTTransformer
 from app.services.template_service import TemplateService
@@ -27,17 +30,20 @@ from app.utils.file_handlers import save_upload_file
 from app.utils.validators import validate_pptx_file
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 # ── Dependency helpers ─────────────────────────────────────────────────────────
 
-def get_llm_service() -> LLMService | MockLLMService:
+def get_llm_service() -> LLMClient:
     if settings.demo_mode:
         return MockLLMService()
+    if settings.llm_provider.lower() == "ollama":
+        return OllamaLLMService()
     return LLMService()
 
 
-def get_ppt_generator(llm: LLMService | MockLLMService = Depends(get_llm_service)) -> PPTGenerator:
+def get_ppt_generator(llm: LLMClient = Depends(get_llm_service)) -> PPTGenerator:
     return PPTGenerator(llm)
 
 
@@ -62,17 +68,32 @@ def get_ppt_transformer(
 async def generate_presentation(
     request: GenerateRequest,
     generator: PPTGenerator = Depends(get_ppt_generator),
+    template_service: TemplateService = Depends(get_template_service),
 ):
     """Generate a PowerPoint presentation from a natural-language prompt."""
     try:
+        template_definition = None
+        if request.template_id:
+            template_definition = await template_service.get_template_definition(
+                request.template_id
+            )
+            if not template_definition:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Template '{request.template_id}' not found.",
+                )
         presentation = await generator.generate(
             prompt=request.prompt,
             template_id=request.template_id,
             slide_count=request.slide_count,
             theme=request.theme,
+            template_definition=template_definition,
         )
         return presentation
     except Exception as exc:
+        if isinstance(exc, HTTPException):
+            raise
+        logger.exception("Generate failed")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to generate presentation. Please try again.",

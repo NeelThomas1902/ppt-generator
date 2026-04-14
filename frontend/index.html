@@ -462,9 +462,9 @@
         <div class="card-title">Upload File</div>
 
         <div class="drop-zone" id="transform-drop">
-          <input type="file" id="transform-file" accept=".pptx" />
+          <input type="file" id="transform-file" accept=".pptx,.potx" />
           <div class="drop-icon">📎</div>
-          <div class="drop-text">Drop your .pptx file here, or <strong>click to browse</strong></div>
+          <div class="drop-text">Drop your .pptx or .potx file here, or <strong>click to browse</strong></div>
           <div class="drop-file-name" id="transform-file-name"></div>
         </div>
 
@@ -701,7 +701,7 @@
   // ── Transform presentation ─────────────────────────────────────────────────
   document.getElementById('btn-transform').addEventListener('click', async () => {
     const file = document.getElementById('transform-file').files[0];
-    if (!file) { showToast('Please select a .pptx file first.', 'error'); return; }
+    if (!file) { showToast('Please select a .pptx or .potx file first.', 'error'); return; }
 
     const fd = new FormData();
     fd.append('file', file);

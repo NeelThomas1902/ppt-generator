@@ -41,6 +41,27 @@ uvicorn app.main:app --reload
 The API is now available at **http://localhost:8000**.  
 Interactive docs (Swagger UI): **http://localhost:8000/docs**
 
+---
+
+## Use Ollama (local, no paid API)
+
+1. Install and run Ollama: https://ollama.com
+2. Pull a Qwen model:
+
+```bash
+ollama pull qwen2.5:7b-instruct
+```
+
+3. Update `.env`:
+
+```env
+DEMO_MODE=false
+LLM_PROVIDER=ollama
+OLLAMA_MODEL=qwen2.5:7b-instruct
+```
+
+4. Run the server as usual.
+
 ### 5. Make your first request
 
 ```bash

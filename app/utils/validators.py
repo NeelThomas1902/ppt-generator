@@ -7,6 +7,7 @@ from fastapi import HTTPException, UploadFile, status
 _ALLOWED_PPTX_CONTENT_TYPES = {
     "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     "application/vnd.ms-powerpoint",
+    "application/vnd.openxmlformats-officedocument.presentationml.template",
 }
 
 _MAX_FILENAME_LENGTH = 255
@@ -16,10 +17,10 @@ def validate_pptx_file(file: UploadFile) -> None:
     """Raise an HTTP 400 error if *file* is not a valid .pptx upload."""
     filename = file.filename or ""
 
-    if not filename.lower().endswith(".pptx"):
+    if not (filename.lower().endswith(".pptx") or filename.lower().endswith(".potx")):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Only .pptx files are accepted.",
+            detail="Only .pptx or .potx files are accepted.",
         )
 
     if len(filename) > _MAX_FILENAME_LENGTH:

@@ -11,6 +11,12 @@ class Settings(BaseSettings):
     # API keys
     anthropic_api_key: str = Field(default="", alias="ANTHROPIC_API_KEY")
 
+    # LLM provider configuration
+    llm_provider: str = Field(default="anthropic", alias="LLM_PROVIDER")
+    ollama_base_url: str = Field(default="http://localhost:11434", alias="OLLAMA_BASE_URL")
+    ollama_model: str = Field(default="qwen2.5:7b-instruct", alias="OLLAMA_MODEL")
+    ollama_timeout_seconds: float = Field(default=60.0, alias="OLLAMA_TIMEOUT_SECONDS")
+
     # Demo / free-testing mode (no API key required)
     demo_mode: bool = Field(default=False, alias="DEMO_MODE")
 
