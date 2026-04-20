@@ -28,8 +28,27 @@ pip install -r requirements.txt
 
 ```bash
 cp .env.example .env
-# Edit .env and add your ANTHROPIC_API_KEY
 ```
+
+Open `.env` and choose one of these options:
+
+**Option A – No API key (recommended for first-time setup)**
+
+```env
+DEMO_MODE=true
+```
+
+The built-in mock LLM generates realistic presentations without any external API. No sign-up required.
+
+**Option B – Real AI responses**
+
+```env
+DEMO_MODE=false
+ANTHROPIC_API_KEY=sk-ant-your-key-here
+```
+
+Get a free $5 Anthropic credit at [console.anthropic.com](https://console.anthropic.com/).  
+See [FREE_TESTING.md](FREE_TESTING.md) for a full comparison of free options.
 
 ### 4. Run the server
 
@@ -85,6 +104,9 @@ docker-compose up --build
 
 - 📖 [API Documentation](API_DOCUMENTATION.md) — full endpoint reference, request/response examples, error codes
 - 🚀 [Quick Start Guide](QUICKSTART.md) — step-by-step setup, common errors and solutions
+- 🆓 [Free Testing Guide](FREE_TESTING.md) — run without an API key (Demo Mode), free-tier options, cost estimates
+- 🔑 [API Keys Guide](API_KEYS.md) — how to obtain and configure your Anthropic API key
+- 🛠️ [Setup Guide](SETUP.md) — virtual environment setup, Windows tips, troubleshooting
 
 ---
 
